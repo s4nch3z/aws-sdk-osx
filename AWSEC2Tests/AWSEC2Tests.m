@@ -13,7 +13,9 @@
 // permissions and limitations under the License.
 //
 
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
 #import <XCTest/XCTest.h>
 #import "AWSEC2.h"
 #import "AWSTestUtility.h"
@@ -83,14 +85,14 @@
             XCTAssertTrue([task.result isKindOfClass:[AWSEC2DescribeInstancesResult class]]);
             AWSEC2DescribeInstancesResult *describeInstancesResult = task.result;
             XCTAssertNotNil(describeInstancesResult.reservations);
-            
+
             for (AWSEC2Reservation *reservation in describeInstancesResult.reservations) {
                 for (AWSEC2Instance * instance in reservation.instances) {
                     if ([instance.instanceId isEqualToString:@"i-dcd2a937"]) {
                         XCTAssertEqual(AWSEC2PlatformValuesWindows, instance.platform);
                     }
                 }
-            }         
+            }
         }
 
         return nil;
@@ -99,21 +101,21 @@
 
 - (void)testDescribeImages {
     AWSEC2 *ec2 = [AWSEC2 defaultEC2];
-    
+
     AWSEC2DescribeImagesRequest *describeImagesRequest = [AWSEC2DescribeImagesRequest new];
     describeImagesRequest.imageIds = @[@"ami-ca94f1a3"]; // .NET Beanstalk Cfn Container v1.0.0.0 on Windows 2008 Image ID
     [[[ec2 describeImages:describeImagesRequest] continueWithBlock:^id(AWSTask *task) {
         if (task.error) {
             XCTFail(@"Error: [%@]", task.error);
         }
-        
+
         if (task.result) {
             XCTAssertTrue([task.result isKindOfClass:[AWSEC2DescribeImagesResult class]]);
             AWSEC2DescribeImagesResult *describeImagesResult = task.result;
             XCTAssertNotNil(describeImagesResult.images);
-            
+
             BOOL imageExist = NO;
-            
+
             for (AWSEC2Image *image in describeImagesResult.images) {
                 if ([image.imageId isEqualToString:@"ami-ca94f1a3"]) {
                     imageExist = YES;
@@ -122,7 +124,7 @@
             }
             XCTAssertTrue(imageExist);
         }
-        
+
         return nil;
 
     }] waitUntilFinished ];
@@ -130,10 +132,10 @@
 
 - (void)testAttachVolumeFailed {
     AWSEC2 *ec2 = [AWSEC2 defaultEC2];
-    
+
     AWSEC2AttachVolumeRequest *volumeRequest = [AWSEC2AttachVolumeRequest new];
     volumeRequest.volumeId = @"invalidVolumeId"; //VolumeId is empty
-    
+
     [[[ec2 attachVolume:volumeRequest] continueWithBlock:^id(AWSTask *task) {
         XCTAssertNotNil(task.error, @"expected InvalidParameterValue error but got nil");
         return nil;

@@ -13,7 +13,9 @@
 // permissions and limitations under the License.
 //
 
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
 #import <XCTest/XCTest.h>
 #import "AWSCore.h"
 #import "AWSURLSessionManager.h"
@@ -35,9 +37,9 @@
 }
 
 - (void)testAWSURLSessionManagerInvalidInitialization{
-    
+
     AWSURLSessionManager *sessionManager = nil;
-    
+
     @try {
         sessionManager = [AWSURLSessionManager new];
     }
@@ -47,13 +49,13 @@
     @finally {
         XCTAssertNil(sessionManager);
     }
-    
+
 }
 
 - (void)testAWSNetworkingInvalidInitialization{
-    
+
     AWSNetworking *network = nil;
-    
+
     @try {
         network = [AWSNetworking new];
     }
@@ -63,11 +65,11 @@
     @finally {
         XCTAssertNil(network);
     }
-    
+
 }
 
 - (void)testHTTPMethodMapping {
-    
+
     XCTAssertEqualObjects(@"GET", [NSString aws_stringWithHTTPMethod:AWSHTTPMethodGET]);
     XCTAssertEqualObjects(@"HEAD", [NSString aws_stringWithHTTPMethod:AWSHTTPMethodHEAD]);
     XCTAssertEqualObjects(@"POST", [NSString aws_stringWithHTTPMethod:AWSHTTPMethodPOST]);
@@ -75,7 +77,7 @@
     XCTAssertEqualObjects(@"PATCH", [NSString aws_stringWithHTTPMethod:AWSHTTPMethodPATCH]);
     XCTAssertEqualObjects(@"DELETE", [NSString aws_stringWithHTTPMethod:AWSHTTPMethodDELETE]);
     XCTAssertEqualObjects(nil, [NSString aws_stringWithHTTPMethod:AWSHTTPMethodUnknown]);
-    
+
 }
 
 - (void)testConfigurationClone{
@@ -93,9 +95,9 @@
                                                                                outputClass:nil];
 
     XCTAssertTrue(configuration.allowsCellularAccess);
-    
+
     AWSServiceConfiguration *configurationClone = [configuration copy];
-    
+
     XCTAssertEqualObjects(configuration.URL, configurationClone.URL);
     XCTAssertEqualObjects(configuration.baseURL, configurationClone.baseURL);
     XCTAssertEqualObjects(configuration.URLString, configurationClone.URLString);
@@ -106,7 +108,7 @@
     XCTAssertEqualObjects(configuration.responseInterceptors, configurationClone.responseInterceptors);
     XCTAssertEqualObjects(configuration.retryHandler, configurationClone.retryHandler);
     XCTAssertTrue(configuration.allowsCellularAccess);
-    
+
     AWSNetworkingConfiguration *networkConfig = [[AWSNetworkingConfiguration alloc] init];
     networkConfig.baseURL = [NSURL URLWithString:@"baseURL"];
     networkConfig.allowsCellularAccess = NO;

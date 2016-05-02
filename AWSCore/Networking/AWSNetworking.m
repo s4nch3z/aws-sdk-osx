@@ -14,7 +14,11 @@
 //
 
 #import "AWSNetworking.h"
+
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
+
 #import "AWSBolts.h"
 #import "AWSCategory.h"
 #import "AWSModel.h"
@@ -144,7 +148,7 @@ NSString *const AWSNetworkingErrorDomain = @"com.amazonaws.AWSNetworkingErrorDom
     } else {
         configuration = [[[self class] allocWithZone:zone] init];
     }
-    
+
     configuration.baseURL = [self.baseURL copy];
     configuration.URLString = [self.URLString copy];
     configuration.HTTPMethod = self.HTTPMethod;
@@ -334,7 +338,7 @@ NSString *const AWSNetworkingErrorDomain = @"com.amazonaws.AWSNetworkingErrorDom
 
     [request setValue:self.userAgent
    forHTTPHeaderField:@"User-Agent"];
-    
+
     return [AWSTask taskWithResult:nil];
 }
 

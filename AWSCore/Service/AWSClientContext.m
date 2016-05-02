@@ -14,7 +14,11 @@
 //
 
 #import "AWSClientContext.h"
+
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
+
 #import <sys/types.h>
 #import <sys/sysctl.h>
 #import "AWSUICKeyChainStore.h"
@@ -66,12 +70,23 @@ static NSString *const AWSClientContextKeychainInstallationIdKey = @"com.amazona
         _appName = appName ? appName : AWSClientContextUnknown;
 
         //Device Details
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+	#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101000
+// code in here might run on Yosemite and above
+        _devicePlatform = AWSClientContextUnknown;
+        _deviceModel = AWSClientContextUnknown;
+        _deviceModelVersion = AWSClientContextUnknown;
+        _devicePlatformVersion = AWSClientContextUnknown;
+	#endif
+#else
+// code for everything else
         UIDevice* currentDevice = [UIDevice currentDevice];
-        NSString *autoUpdatingLoaleIdentifier = [[NSLocale autoupdatingCurrentLocale] localeIdentifier];
         _devicePlatform = [currentDevice systemName] ? [currentDevice systemName] : AWSClientContextUnknown;
         _deviceModel = [currentDevice model] ? [currentDevice model] : AWSClientContextUnknown;
         _deviceModelVersion = [self deviceModelVersionCode] ? [self deviceModelVersionCode] : AWSClientContextUnknown;
         _devicePlatformVersion = [currentDevice systemVersion] ? [currentDevice systemVersion] : AWSClientContextUnknown;
+#endif
+        NSString *autoUpdatingLoaleIdentifier = [[NSLocale autoupdatingCurrentLocale] localeIdentifier];
         _deviceManufacturer = @"apple";
         _deviceLocale = autoUpdatingLoaleIdentifier ? autoUpdatingLoaleIdentifier : AWSClientContextUnknown;
 

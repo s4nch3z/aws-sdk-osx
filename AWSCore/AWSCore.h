@@ -13,7 +13,9 @@
 // permissions and limitations under the License.
 //
 
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
 
 //! Project version number for AWSCore.
 FOUNDATION_EXPORT double AWSCoreVersionNumber;

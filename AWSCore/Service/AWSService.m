@@ -15,7 +15,10 @@
 
 #import "AWSService.h"
 
+#ifndef __MAC_OS_X_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
+#endif
+
 #import "AWSSynchronizedMutableDictionary.h"
 #import "AWSURLResponseSerialization.h"
 #import "AWSLogging.h"
@@ -131,11 +134,20 @@ static NSString *const AWSServiceConfigurationUnknown = @"Unknown";
     static NSString *_userAgent = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+  #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101000
+// code in here might run on Yosemite and above
+        NSString *systemName = AWSServiceConfigurationUnknown;
+        NSString *systemVersion = AWSServiceConfigurationUnknown;
+	#endif
+#else
+// code for everything else
         NSString *systemName = [[[UIDevice currentDevice] systemName] stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+        NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+#endif
         if (!systemName) {
             systemName = AWSServiceConfigurationUnknown;
         }
-        NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
         if (!systemVersion) {
             systemVersion = AWSServiceConfigurationUnknown;
         }
@@ -197,7 +209,7 @@ static NSMutableArray *_globalUserAgentPrefixes = nil;
     configuration.regionType = self.regionType;
     configuration.credentialsProvider = self.credentialsProvider;
     configuration.userAgentProductTokens = self.userAgentProductTokens;
-    
+
     return configuration;
 }
 
@@ -429,7 +441,7 @@ static NSString *const AWSServiceNameSTS = @"sts";
         NSString *urlString = [URL absoluteString];
         URL = [NSURL URLWithString:[urlString stringByAppendingString:@".cn"]];
     }
-    
+
     return URL;
 }
 
